@@ -74,6 +74,7 @@ This report needs to be updated monthly
 ### Architecture/Design Requirements
  * Ability to see quality measures from population level to provider level to member level
  * Compare quality measures to the target
+ * Source of data will be from the PUAD and PUDD from the Analytics Pipeline
 
 ### Performance Requirements
 
