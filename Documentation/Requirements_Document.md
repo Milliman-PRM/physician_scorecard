@@ -10,7 +10,7 @@ The purpose of this dashboard/scorecard is to allow a physicians manager to quic
 The reasoning behind developing this dashboard is that clients have been asking for a way to easily figure out how their providers are doing with respect to quality measures. 
 
 ### References
-None.
+Interviewed consultants within the PRM office to see what their clients were asking for.
 
 ### Assumptions
 Quality measure targets are accurate to the clients goals.
