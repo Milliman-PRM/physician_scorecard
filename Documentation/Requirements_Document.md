@@ -58,6 +58,7 @@ User must be able to
 	 * Office
 	 * Pharmacy
  * See PMPM for a single provider
+ * See risk scores for a single provider
  * See quality measures at the population level
  * See quality measures at the provider level
  * See quality measures at the member level
