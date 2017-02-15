@@ -83,5 +83,6 @@ The report needs to be reducable.
 None.
 
 ### Project Lifecycle/Update Requirements
-Lifecycle - ongoing - infinity.
-Update as needed with version releases.
+ * Lifecycle - monthly updates.
+ * Update as needed with version releases.
+ * 
