@@ -77,7 +77,7 @@ This report needs to be updated monthly
 ### Performance Requirements
 
 ### Security Requirements
-The users must only be able to see their providers.
+The report needs to be reducable.
 
 ### Other Requirements
 None.
