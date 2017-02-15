@@ -68,6 +68,7 @@ User must be able to
 	 * Member list
 
 ### Functional Requirements
+This report needs to be updated monthly
 
 ### Architecture/Design Requirements
  * Ability to see quality measures from population level to provider level to member level
