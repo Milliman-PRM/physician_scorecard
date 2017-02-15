@@ -13,7 +13,10 @@ The reasoning behind developing this dashboard is that clients have been asking 
 Interviewed consultants within the PRM office to see what their clients were asking for.
 
 ### Assumptions
-Quality measure targets are accurate to the clients goals.
+ * Milliman PRM Analytics will provide hosting for the tool
+ * The tool will follow this data schema:
+ *image here*
+ * Quality measure targets are accurate to the clients goals
 
 ### Constraints
 Quality measures will differ for each client. There isn't an easy way to display the various types of quality measures.
