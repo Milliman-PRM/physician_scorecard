@@ -86,4 +86,3 @@ None.
 ### Project Lifecycle/Update Requirements
  * Lifecycle - monthly updates.
  * Update as needed with version releases.
- * 
