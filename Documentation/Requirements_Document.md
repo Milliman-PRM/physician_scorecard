@@ -33,8 +33,10 @@ Quality measures will differ for each client. There isn't an easy way to display
  * **TIN** - Taxpayer Identification Numbers
 
 ### Roles & Responsibilities
- * Michael Reisz - lead developer
- * Kelsie Stevenson - developer
+Name | Contact Information | Role | Responsibilites
+:---| :---| :--- | :---
+Michael Reisz | michael.reisz@milliman.com | Development Coordinator | Coordinate UI development, Provide initial UI mockup, Define data model
+Kelsie Stevenson | kelsie.stevenson@milliman.com | Developer | Work on initial UI mockup, Help define data model
 
 ## Requirements
 This project requires...
