@@ -15,7 +15,9 @@ Interviewed consultants within the PRM office to see what their clients were ask
 ### Assumptions
  * Milliman PRM Analytics will provide hosting for the tool
  * The tool will follow this data schema:
- *image here*
+
+ ![Data Model](Data_Model.PNG)\
+
  * Quality measure targets are accurate to the clients goals
 
 ### Constraints
