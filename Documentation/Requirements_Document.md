@@ -7,7 +7,7 @@ Our clients are looking for a way to easily look up their providers and see how 
 The purpose of this dashboard/scorecard is to allow a physicians manager to quickly and easily see how their providers are doing with respect to quality measures. We would like the manager to be able to choose specific providers and be able to export a list of that providers members to take action on.
 
 ### Background
-The reasoning behind developing this dashboard is that clients have been asking for a way to easily figure out how their providers are doing with respect to quality measures. 
+The reasoning behind developing this dashboard is that clients have been asking for a way to easily figure out how their providers are doing with respect to quality measures.
 
 ### References
 Interviewed consultants within the PRM office to see what their clients were asking for.
@@ -31,7 +31,7 @@ Quality measures will differ for each client. There isn't an easy way to display
  * **OP** - Outpatient
  * **PMPM** - Per Member per Month
  * **QMs** - Quality measures
- * **SNF** - Skilled Nursing Facility 
+ * **SNF** - Skilled Nursing Facility
  * **TIN** - Taxpayer Identification Numbers
 
 ### Roles & Responsibilities
@@ -44,7 +44,7 @@ Kelsie Stevenson | kelsie.stevenson@milliman.com | Developer | Work on initial U
 This project requires...
 
 ### User Requirements
-User must be able to 
+User must be able to:
  * See all of the providers
  * Search for provider by
 	 * Provider name
@@ -81,6 +81,7 @@ User must be able to
 	 * Member list
 
 ### Functional Requirements
+None.
 
 ### Architecture/Design Requirements
  * Ability to see quality measures from population level to provider level to member level
@@ -88,9 +89,10 @@ User must be able to
  * Source of data will be from the PUAD and PUDD from the Analytics Pipeline
 
 ### Performance Requirements
+None.
 
 ### Security Requirements
-The report needs to be reducible.
+ * The report needs to be reducible.
 
 ### Other Requirements
 None.
