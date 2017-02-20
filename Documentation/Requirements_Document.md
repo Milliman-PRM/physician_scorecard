@@ -60,10 +60,20 @@ User must be able to
 	 * Office
 	 * Pharmacy
  * See PMPM for a single provider
- * See risk scores for a single provider
- * See quality measures at the population level
- * See quality measures at the provider level
- * See quality measures at the member level
+	 * ER
+	 * IP
+	 * SNF
+	 * Home health
+	 * Hospice
+	 * Office
+	 * Pharmacy
+ * PMPM for a single provider
+ * Risk scores for a single provider
+ * Risk Adjusted PMPM
+ * Population Average PMPM
+ * Quality measures at the population level
+ * Quality measures at the provider level
+ * Quality measures at the member level
  * See a comprehensive list of all members assigned to a specific provider
  * Print/send to excel
 	 * Provider list
