@@ -35,10 +35,10 @@ Quality measures will differ for each client. There isn't an easy way to display
  * **TIN** - Taxpayer Identification Numbers
 
 ### Roles & Responsibilities
-Name | Contact Information | Role | Responsibilites
+Name | Contact Information | Role | Responsibilities
 :---| :---| :--- | :---
-Michael Reisz | michael.reisz@milliman.com | Development Coordinator | Coordinate UI development, Provide initial UI mockup, Define data model
-Kelsie Stevenson | kelsie.stevenson@milliman.com | Developer | Work on initial UI mockup, Help define data model
+Michael Reisz | michael.reisz@milliman.com | Development Coordinator | Coordinate UI development, Provide initial UI mock-up, Define data model
+Kelsie Stevenson | kelsie.stevenson@milliman.com | Developer | Work on initial UI mock-up, Help define data model
 
 ## Requirements
 This project requires...
@@ -90,11 +90,11 @@ User must be able to
 ### Performance Requirements
 
 ### Security Requirements
-The report needs to be reducable.
+The report needs to be reducible.
 
 ### Other Requirements
 None.
 
-### Project Lifecycle/Update Requirements
- * Lifecycle - monthly updates.
+### Project Life-cycle/Update Requirements
+ * Life-cycle - monthly updates.
  * Update as needed with version releases.
