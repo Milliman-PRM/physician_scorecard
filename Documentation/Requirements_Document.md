@@ -84,7 +84,10 @@ User must be able to:
 None.
 
 ### Architecture/Design Requirements
- * Ability to see quality measures from population level to provider level to member level
+ * Ability to see quality measures at different levels:
+	 * population level
+      * provider level
+      * member level
  * Compare quality measures to the target
  * Source of data will be from the PUAD and PUDD from the Analytics Pipeline
 
