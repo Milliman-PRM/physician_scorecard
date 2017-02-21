@@ -67,10 +67,10 @@ User must be able to:
 	 * Hospice
 	 * Office
 	 * Pharmacy
- * PMPM for a single provider
- * Risk scores for a single provider
+      * Total
  * Risk Adjusted PMPM
- * Population Average PMPM
+ * Average PMPM at the population level
+ * Risk scores for a single provider
  * Quality measures at the population level
  * Quality measures at the provider level
  * Quality measures at the member level
