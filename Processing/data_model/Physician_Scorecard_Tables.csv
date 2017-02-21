@@ -1,0 +1,9 @@
+name_field,name_table,key_table,key_global
+meta_field,PS00_meta_field,Y,N
+meta_field_label,PS00_meta_field,N,N
+meta_field_comment,PS00_meta_field,N,N
+meta_project,PS01_meta_project,Y,N
+meta_project_string,PS01_meta_project,N,N
+meta_project_date,PS01_meta_project,N,N
+meta_project_integer,PS01_meta_project,N,N
+meta_project_notes,PS01_meta_project,N,N

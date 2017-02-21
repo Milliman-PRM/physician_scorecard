@@ -1,0 +1,9 @@
+name_field,label,data_type,data_size,allow_nulls,whitelist_nonnull_values,require_label_ifnotallnull,notes_develop,notes_client
+meta_field,,varchar,32,N,,N,,
+meta_field_label,,varchar,80,Y,,N,"Not the key, but no duplicates allowed!",
+meta_field_comment,,varchar,4096,Y,,N,,
+meta_project,,varchar,64,N,,N,,
+meta_project_string,,varchar,128,Y,,N,,
+meta_project_date,,date,,Y,,N,,
+meta_project_integer,,integer,,Y,,N,,
+meta_project_notes,,varchar,256,N,,N,,Describes provided metadata.
