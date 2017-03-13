@@ -10,8 +10,8 @@ meta_project_notes,,varchar,256,N,,N,,Describes provided metadata.
 prv_id,,varchar,40,N,,N,unique key,Unique provider identifier
 prv_name,,varchar,128,N,,Y,metadata label / dynamic label,
 prv_hier_1,,varchar,128,N,,Y,metadata label / dynamic label,
-prv_id_npi,,,,,,,,
-prv_id_tin,,,,,,,,
+prv_id_npi,,char,40,Y,,N,National provider identifier,National provider identifier
+prv_id_tin,,varchar,40,Y,,N,The billing provider's taxpayer identification number (TIN),The billing provider's taxpayer identification number (TIN)
 member_id,Member ID,varchar,40,N,,N,unique key,Unique member identifier
 mem_name,Name,varchar,128,Y,,N,,
 dob,DOB,date,,Y,,N,,
@@ -24,12 +24,12 @@ total_costs,,float,,Y,,N,Total Costs,
 service_category_id,,integer,,N,,N,1-to-1 uniqeness with hist_time_service; Values {1; 2; 3; 4; ...} to drive reporting order,
 utilization,,integer,,Y,,N,Assumes proper utilization basis is chosen based on service type,
 service_category_desc,,varchar,128,N,,N,,Detailed Service Category Description
-memmos_source,,varchar,,,,,,
+memmos_source,,varchar,8,N,medical~rx,N,Indicator of the member months source,
 comp_quality_short,Quality Measure Abbreviation,varchar,32,N,,N,Quality measure abbreviation,
 comp_quality_numerator,,float,,N,,N,Numerator for calculating associated quality metric.  Can be more than one for some metrics.,Numerator for calculating associated quality metric.  Can be more than one for some metrics.
 comp_quality_denominator,,float,,N,,N,Denominator for calculating associated quality metric.  Can be more than one for some metrics.,Denominator for calculating associated quality metric.  Can be more than one for some metrics.
-comp_quality_met,Quality Measure Abbreviation,varchar,32,N,,N,Quality measure abbreviation,
-comp_quality_short,,varchar,,,,,,
+comp_quality_met,Quality Measure Met,char,1,Y,Y~N,N,Values: {Y; N},
+comp_quality_short,Quality Measure Abbreviation,varchar,32,N,,N,Quality measure abbreviation,
 comp_quality,Quality Measure,varchar,128,N,,N,,
 comp_quality_direction,Quality Measure Direction,varchar,16,Y,Higher_Better~Lower_Better,N,Is a higher number or a lower number better for measure valuation?,Is a higher number or a lower number better for measure valuation?
 comp_quality_target_value,,float,,Y,,Y,,
