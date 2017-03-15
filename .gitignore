@@ -1,0 +1,21 @@
+# Python [Byte-compiled, Optimized, DLL]
+*.py[cod]
+
+# Temporary Microsoft Office Files
+~$*.doc*
+~$*.xls*
+
+# Potential CI Logs
+_ci_reports
+.coverage
+.cache
+
+# Ignore IDE files
+.idea
+flycheck*.py
+
+# QVWs
+*.qvw
+
+# Trigger files
+Reporting/*.txt
