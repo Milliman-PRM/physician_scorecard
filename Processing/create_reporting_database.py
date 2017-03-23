@@ -28,7 +28,7 @@ PRM_META = prm.meta.project.parse_project_metadata()
 
 def main() -> int:
     """A function to enclose the execution of business logic."""
-    LOGGER.info('About to do something awesome.')
+    LOGGER.info('Launching Spark App.')
     sparkapp = SparkApp(PRM_META['pipeline_signature'])
 
     # Create the dataframes:
@@ -58,6 +58,7 @@ def main() -> int:
     df_temp = dict()
     df_out = dict()
 
+    LOGGER.info('Populating dataframes from project parquet outputs.')
     for table, dir in dataframes:
         parquet_name = table + '.parquet'
         df_raw[table] = sparkapp.load_df(PRM_META[dir, 'out'] / parquet_name)
@@ -67,11 +68,13 @@ def main() -> int:
     """
         Provider Table
     """
+    LOGGER.info('Creating the Provider Table.')
     df_temp['providers'] = df_raw['providers'].select('prv_id', 'prv_name', 'prv_hier_1', 'prv_hier_2', 'prv_id_npi').filter('prv_type = "Physician"').withColumnRenamed('prv_taxonomy_cd', 'prv_id_tin')
     df_temp['provider_memcnt'] = df_raw['member'].groupBy('mem_prv_id_align').agg({'member_id': 'count'}).withColumnRenamed('count(member_id)', 'member_count')
     df_out['providers'] = df_temp['providers'].join(df_temp['provider_memcnt'], df_temp['providers'].prv_id == df_temp['provider_memcnt'].mem_prv_id_align, 'inner').drop(df_temp['provider_memcnt'].mem_prv_id_align).orderBy('mem_prv_id_align')
 
     # Get a distinct list of assigned providers to use in limiting later dataframes
+    LOGGER.info('Building temporary Provider/Member tables.')
     df_temp['provider_distinct'] = df_out['providers'].select('prv_id').distinct()
     df_temp['prv_mem_align'] = df_raw['member'].select('member_id', 'mem_prv_id_align').distinct().orderBy('member_id', 'mem_prv_id_align').withColumnRenamed('mem_prv_id_align', 'prv_id')
 
@@ -79,6 +82,7 @@ def main() -> int:
     """
         Provider_Time Table
     """
+    LOGGER.info('Creating the Provider Time table.')
     for line in ['medical', 'rx']:
         df_temp['provider_time_' + line] = df_raw['member_time'].select(
             'mem_prv_id_align',
@@ -122,6 +126,7 @@ def main() -> int:
     """
         Cost/Utilization Table
     """
+    LOGGER.info('Creating the Cost and Utilization table.')
     df_temp['member_util_medical'] = df_raw['outclaims_PRM'].select(
         'member_id',
         'prm_yearmo_fromdate_claim',
@@ -214,8 +219,9 @@ def main() -> int:
 
 
     """
-        Cost/Utilization Table
+        Cost/Utilization Reference Table
     """
+    LOGGER.info('Creating the Cost and Utilization reference table.')
     df_out['ref_service_cat'] = df_raw['prm_line_agg'].select(
         'prm_line_agg',
         'hist_time_service_ind',
@@ -231,6 +237,7 @@ def main() -> int:
     """
         Quality Measures Table
     """
+    LOGGER.info('Creating the Quality Measures table.')
     df_temp['member_quality_measures'] = df_raw['puad05_comp_quality'].select(
         'member_id',
         'comp_quality_short',
@@ -274,7 +281,8 @@ def main() -> int:
     """
         Quality Measures Reference Table
     """
-    df_out['ref_member_quality_measures'] = df_raw['puad05ref_comp_quality'].select(
+    LOGGER.info('Creating the Quality Measures reference table.')
+    df_out['ref_quality_measures'] = df_raw['puad05ref_comp_quality'].select(
         'comp_quality_short',
         'comp_quality_dual',
         'comp_quality',
