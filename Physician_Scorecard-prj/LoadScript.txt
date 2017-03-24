@@ -1,0 +1,225 @@
+﻿///$tab Setup
+/*
+### OWNERS: Michael Reisz, Kelsie Stevenson
+
+### OBJECTIVE:
+	Design an adaptive template to surface Physician scorecard based on utilization, pmpm, and quality measures.
+
+### DEVELOPER NOTES:
+	Primary integration information is derived at load time from a text file $(included) below.
+		The $(Included) file should at least provide connection string information for a SQL database and needed query qualifiers.
+	Other integration/meta information should be provided by a table in the referenced database.
+	Images are currently stored with the analytic code base and loaded from there.
+		Location of code base is defined in the metadata.
+	Reporting "transformation" are currently done about 50/50 in the analytic code and this load script.
+*/
+
+
+// QlikView-specific variables (auto-generated):
+$(Include=toolbarscript.txt);
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='$#,##0.00;($#,##0.00)';
+SET TimeFormat='h:mm:ss TT';
+SET DateFormat='DD-MMM-YYYY';
+SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET ErrorMode=0;
+
+LET DataExtraction=false();
+
+// Pull the connection information from an "include" file.
+$(Include=.\Caregivers_Checklist.txt);
+///$tab Metafields
+CCR00_Meta_Field:
+LOAD
+	meta_field,
+	meta_field_label
+	;
+SQL Select
+	meta_field,
+	meta_field_label
+FROM "$(vSchema)CCR00_meta_field";
+	
+	
+//Load all the metadata into proper macro variables to establish consistency with the rest of the project
+for i_meta = 0 to (NoOfRows('CCR00_Meta_Field') - 1)
+
+	// Define the variable name, so that we can use it in naming the following variables
+	let vMeta_Field = peek('meta_field',i_meta,'CCR00_Meta_Field');
+	let vMeta_Field_label = peek('meta_field_label', i_meta, 'CCR00_Meta_Field');
+	
+	If len('$(vMeta_Field_label)') = 0 Then
+		// If the label is blank, then set the label to be the field name
+		let lbl_$(vMeta_Field) = '$(vMeta_Field)';
+		// If the label is blank, set the rename variable to be blank, so that a duplicate field will not be created
+		let rnm_$(vMeta_Field) = '$(vMeta_Field) As [$(vMeta_Field)]';
+	Else
+		// If the label isn't blank, set the label variable to the label value
+		let lbl_$(vMeta_Field) = '$(vMeta_Field_label)';
+		// Create a "rename" variable that we will use to create duplicate fields ("field_name As [label_name]")
+		let rnm_$(vMeta_Field) = '$(vMeta_Field) As [$(vMeta_Field_label)]';
+		// Add a section to define the condition group status variables when necessary
+		If Left('$(vMeta_Field)', 8) = 'cond_grp' And Right('$(vMeta_Field)', 3) <> 'int' Then
+			let lbl_$(vMeta_Field)_flag = '$(vMeta_Field_label) Flag';
+			let rnm_$(vMeta_Field)_flag = '$(vMeta_Field)_flag As [$(vMeta_Field_label) Flag]';
+			let lbl_$(vMeta_Field)_status = '$(vMeta_Field_label) Status';
+			let rnm_$(vMeta_Field)_status = '$(vMeta_Field)_status As [$(vMeta_Field_label) Status]';
+		End If
+	End If
+
+	
+	// Display the results in the log
+	trace lbl_$(vMeta_Field) = $(lbl_$(vMeta_Field));
+	trace rnm_$(vMeta_Field) = $(rnm_$(vMeta_Field));
+	If Left('$(vMeta_Field)', 8) = 'cond_grp' And Right('$(vMeta_Field)', 3) <> 'int' Then
+		trace lbl_$(vMeta_Field)_flag = $(lbl_$(vMeta_Field)_flag);
+		trace rnm_$(vMeta_Field)_flag = $(rnm_$(vMeta_Field)_flag);
+		trace lbl_$(vMeta_Field)_status = $(lbl_$(vMeta_Field)_status);
+		trace rnm_$(vMeta_Field)_status = $(rnm_$(vMeta_Field)_status);
+	End If
+	// reset the vMeta_field variable at the end, so that it doesn't persist after the loadscript runs
+	let vMeta_Field = Null();
+		
+next i_meta
+///$tab Metadata
+// NOTE:  The variables "meta_project_string", "meta_project_date", "meta_project_integer" exist to separate metavalues by type.
+//		  Any given row will only have one of these fields populated.  QlikView Macro language only recognizes strings, so just 
+//		  coalesce them all together into Text for ease of consumption.
+
+CCR01_Meta_Project:
+LOAD
+	meta_project,
+	meta_project_value
+	;
+SQL SELECT
+	meta_project,
+	Cast(Coalesce(meta_project_string, meta_project_date, meta_project_integer) As Text) As meta_project_value
+FROM "$(vSchema)CCR01_meta_project"
+	;
+
+//Load all the metadata into proper macro variables to establish consistency with the rest of the project
+for i_meta = 0 to (NoOfRows('CCR01_Meta_Project') - 1)
+	let vMeta_Field = 'v' & peek('meta_project',i_meta,'CCR01_Meta_Project');
+	let $(vMeta_Field) = Null();
+	let $(vMeta_Field) = Replace(peek('meta_project_value',i_meta,'CCR01_Meta_Project'),chr(39),'^');
+	trace $(vMeta_Field) = $($(vMeta_Field));
+next i_meta
+
+
+//Derive some pretty forms of labels we want to show to clients
+
+SET vName_Client_Pretty = $(vName_Client);
+TRACE vName_Client_Pretty = $(vName_Client_Pretty);
+
+LET vDate_LatestPaid_Pretty = Null();
+LET vDate_LatestPaid_Pretty = Date(Date#('$(vDate_LatestPaid_Round)','YYYY-MM-DD'), 'MMMM YYYY');
+TRACE vDate_LatestPaid_Pretty = $(vDate_LatestPaid_Pretty);
+
+
+// Define the Prescription label based on the Lexicon field
+SET vLexicon_Label = Null();
+If vLexicon = 'Medicare' Then
+	SET vLexicon_Label = 'Part D Prescriptions Filled';
+Else
+	SET vLexicon_Label = 'Retail Prescriptions Filled';
+EndIF
+TRACE vLexicon = $(vLexicon);
+TRACE vLexicon_Label = $(vLexicon_Label);
+
+LET vHoverDate = Date(Now(), 'MMMM DD, YYYY h:mm:ss TT');
+///$tab Variable Creation
+// Create variables that will be used in the QlikView Application
+
+//Location of Images to use
+LET vPath_QlikView_Images_CGC = 'S:\PRM\Pipeline_Components\Caregivers_Checklist\_images';
+
+
+// Set variables for obtaining prior year costs
+LET vPriorYear = Year(Date#('$(vDate_LatestPaid_Round)','YYYY-MM-DD'))-1;
+LET vPriorYearStartDate = MakeDate(vPriorYear,01,01);
+LET vPriorYearEndDate = MakeDate(vPriorYear,12,31);
+
+
+//Add color variables
+// Miscellaneous 
+cSheetBackground			= RGB(248, 248, 248);		// Background of report
+cBorder						= RGB(232, 232, 232);		// Borders around the frames in the report
+cChartBackground			= RGB(255, 255, 255);		// The background color of all charts (background for frames, graphs, and tables)
+cHeaderText					= RGB(  0, 129, 227);		// Text color for headers of the report
+cMainHeaderUnderline		= RGB( 80, 190, 225);		// Line separating main header from report
+cText						= RGB( 57,  65,  77);		// Text color throughout report
+cOutlineCheck				= RGB(128, 128, 128);		// Outline of checkboxes color
+cTextNA						= RGB(192, 192, 192);		// Text color for unavailable check
+cOutlineCheckNA				= $(cTextNA)				// Outline of checkbox will match text color
+cKPIText					= RGB( 80, 190, 225);		// The KPI text color
+cSelected					= RGB(  0, 240,  16);		// Selected field color
+cNotSelected				= RGB(255, 255, 255);		// Selected field color
+
+// Charts (Graphs and Tables)
+cScrollBar					= RGB(  0, 129, 227);		// Scrollbar color
+cTableSubHeaderBackground	= RGB(232, 232, 232);		// Subheader background for all tables
+cRiskBars					= RGB(255,  43,  43);		// For Relative Risk bars
+cRiskGain					= RGB(  0, 196,  55);		// For the risk gain numbers
+cDeniedRxText				= RGB(255,  43,  43);		// For Denied drugs text color
+cBar1						= RGB(  0, 129, 227);		// Bar color - vibrant blue
+cBar2						= RGB(255, 162,   0);		// Bar color - gold
+cBar3						= RGB( 80, 190, 225);		// Bar color - sky
+cBar4						= RGB(116, 192,  97);		// Bar color - spring
+cBar5						= RGB(  0, 166,  99);		// Bar color - emerald
+cBarText					= RGB(255, 255, 255);		// Bar Text
+
+
+// Buttons & Tabs
+cButtonBackground			= RGB(  0, 166,  99);		// Button color
+cButtonBackgroundDisabled	= RGB(184, 187, 188);		// Disabled Button color
+cButtonText					= RGB(255, 255, 255);		// Button text
+cTabSelectedBackground		= ARGB(255,   0, 129, 227);	// Tab selected background
+cTabNotSelectedBackground	= ARGB(100,   0, 129, 227);	// Tab not selected background
+cTabText					= RGB(255, 255, 255);		// Tab text color
+///$tab Main
+///$tab Images
+Images:
+Bundle
+LOAD * INLINE [
+    Image Name, Path
+    PRM, $(vPath_QlikView_Images_CGC)\PRM Analytics.png
+    ClientLogo, $(vFilepath_Client_Logo)
+    DemoLogo, $(vPath_QlikView_Images_CGC)\Demo Client Logo.png
+    QlikView, $(vPath_QlikView_Images_CGC)\QlikView.jpg
+];
+///$tab Variable Cleanup
+// Get rid of the Rename fields
+for i_meta = 0 to (NoOfRows('CCR00_Meta_Field') - 1)
+
+	let vMeta_Field = peek('meta_field',i_meta,'CCR00_Meta_Field');
+	
+	// Set all of these variables to be Null so that they don't persist after the loadscript is finished
+	let rnm_$(vMeta_Field) = Null();
+	let rnm_$(vMeta_Field)_flag = Null();
+	let rnm_$(vMeta_Field)_status = Null();
+	let $(vMeta_Field) = Null();
+	let vMeta_Field = Null();
+		
+next i_meta
+
+// Set this counter to Null so that it doesn't persist after the loadscript is finished
+let i_meta = Null();
+
+// Clean up the remaining variables that won't be used in the QlikView application
+let vCnt_Report_Split = Null();
+let vDate_LatestPaid_Round = Null();
+let vDate_LatestPaid = Null();;
+let vLexicon = Null();
+let vMaxDate = Null();
+let vMeta_Field = Null();
+let vMinDate = Null();
+let vPath_Product_Code = Null();
+let vPath_QlikView_Images = Null();
+let vProduct_Code_Rev = Null();
+let vProject_ID = Null();
+let vSchema = Null();
+let vTopXPerc = Null();
